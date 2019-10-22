@@ -1,0 +1,103 @@
+
+  <div class="header">
+    <!--<img src="logoCinvesHeader.png" width=100 height=100 align="center"> --><h1>Viajando Por México</h1>
+  </div>
+
+  <!-- Coordenadas iniciales -->
+
+  <div class="labels">
+    <h3>Posición inicial</h3>
+    <label>Latitud: </label><input type="number" [(ngModel)] = "latitud" placeholder="Latitud"/>
+    <label> Longitud: </label><input type="number" [(ngModel)] = "longitud" placeholder="Longitud"/>
+  </div>
+  <br/>
+
+  <!-- Método a utilizar -->
+  <div id="radios" class="radios">
+    <label><input type="radio" [(ngModel)] = "algoritmo" value = "E">Búsqueda exhaustiva</label><br/>
+    <label><input type="radio" [(ngModel)] = "algoritmo" value = "V">Búsqueda voráz</label><br/>
+    <label><input type="radio" [(ngModel)] = "algoritmo" value = "A">Ambas</label><br/>
+  </div>
+<br/>
+
+  <!-- ComboBox de Estados y Ciudades -->
+
+  <select id="selectEstados" (change)="cambiarEstado($event.target.value)">
+      <option
+        id="estado-{{ estado.nombre }}"
+        *ngFor="let estado of estados"
+        value="{{ estado.nombre }}">
+        {{ estado.nombre }}
+    </option>
+  </select>
+
+  <select (change)="cambiarCiudad($event.target.value)" id="selectCiudades">
+    <option
+        id="ciudad-{{ ciudad.nombre }}"
+        *ngFor="let ciudad of ciudades"
+        value="{{ ciudad.nombre }}">
+        {{ ciudad.nombre }}
+    </option>
+  </select>
+
+  <!-- Agregar Ciudades a la Lista -->
+
+  <button (click)="agregarUbicacion()">
+    Seleccionar
+  </button>
+<br/>
+<br/>
+
+  <!-- Tabla de Estados Seleccionados -->
+  <div id="estadosSeleccionados" *ngIf="!itinerarioService.ningunoSeleccionado()">
+      <table>
+      <thead>
+          <th>Estado</th>
+          <th>Ciudad</th>
+          <th>Latitud</th>
+          <th>Longitud</th>
+      </thead>
+      <tbody>
+          <tr *ngFor="let ubicacion of itinerarioService.ubicaciones">
+          <td>{{ ubicacion.nombreEstado }}</td>
+          <td>{{ ubicacion.nombreCiudad }}</td>
+          <td>{{ ubicacion.latitud }}</td>
+          <td>{{ ubicacion.longitud }}</td>
+          </tr>
+      </tbody>
+      </table>
+  </div>
+<br/>
+
+  <!-- Calcular Ruta -->
+  <button (click)="calcularMejorRuta()" [disabled]="ningunoSeleccionado()">
+      Enviar
+  </button>
+<br/>
+
+  <!-- Solución Exhaustiva -->
+  <div id="exhaustiva" *ngIf="itinerarioService.mostrarExhaustiva()">
+    
+    <p>has seleccionado exhaustiva</p>
+      
+      <table style="white-space: pre;">
+          <tbody>
+            <tr *ngFor="let soluciones of itinerarioService.solucionesExhaustivo">
+              <td>Ruta: {{ soluciones.ubicaciones }}</td>
+              <td>Distancia: {{ soluciones.distancia | number }} km</td>
+            </tr>
+        </tbody>
+      </table>
+  </div>
+
+  <!-- Solución Voraz -->
+  <div id="voraz" *ngIf="itinerarioService.mostrarVoraz()">
+    <h3>Búsqueda voráz</h3>
+    
+    <table style="white-space: pre;">
+        <tbody>
+            <td>Ruta: {{ itinerarioService.solucionVoraz.ciudades }}</td>
+            <td>Distancia: {{ itinerarioService.solucionVoraz.distancia | number }} km</td>
+        </tbody>
+      </table>
+  </div>
