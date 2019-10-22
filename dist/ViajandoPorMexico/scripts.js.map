@@ -1,0 +1,1 @@
+{"version":3,"sources":["src/assets/js/operaciones.js"],"names":[],"mappings":"AAAA;AACA;AACA","file":"scripts.js","sourcesContent":["function getInfoFromJSFile(){\n\treturn \"Vengo del JS\";\n}\n"],"sourceRoot":"webpack:///"}
