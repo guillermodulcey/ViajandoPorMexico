@@ -4,13 +4,13 @@ const path = require('path');
 
 const app = express();
 
-console.log(__dirname + '/dist/viajandopormexico/index.html');
+console.log('/dist/viajandopormexico/index.html');
 
 // Serve only the static files form the dist directory
 app.use(express.static(__dirname + '/dist'));
 
 app.get('/*', function(req,res) {
-    const index = path.join(__dirname + '/dist/viajandopormexico/index.html');
+    const index = path.join('/dist/viajandopormexico/index.html');
     res.sendFile(index);
 });
 
