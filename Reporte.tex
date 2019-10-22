@@ -1,5 +1,6 @@
 \documentclass[10pt]{report}
 \usepackage{graphicx}
+\usepackage[utf8]{inputenc}
 \addtolength{\textwidth}{4cm}
 \addtolength{\hoffset}{-2cm}
 \topmargin -0.30cm
@@ -12,9 +13,62 @@
 \maketitle
 
 \section*{Titulo}
-Texto
+https://viajandopormexico.herokuapp.com/
 
-\subsection*{Subtitulo}
-Texto
+\subsection*{AngularJS}
+AngularJS es un framework de desarrollo web creado por google para codificar l\'{o}gica del lado del cliente. Su arquitectura se basa en MVVC. El framework utiliza javascript como lenguaje principal aunque sus archivos son en su mayor\'{i}a typescript (para integraci\'{o}n con arquitectura JSON).
+
+\subsection*{Algoritmo vor\'{a}z}
+El algoritmo utilizado fue una b\'{u}squeda en dos direcciones. Primero se va a considerar las dos ciudades m\'{a}s cercanas al punto de origen, creando una ruta de ida y otra ruta de regreso. De esta manera se calculan las distancias m\'{a}s cortas en un sentido casi circular del recorrido.
+\\
+\\
+1.busquedaVoraz(ubicacionInicial, ubicaciones)
+
+$\;$2.solucion = \emptyset
+
+$\;$3.ordenCiudades = \emptyset
+
+$\;$4.regresoCiudades = \emptyset
+
+$\;$5.ordenCiudades.añadir(menorDistancia(ubicacionInicial,ubicaciones))
+
+$\;$6.ubicaciones = quitarUbicacion(ordenCiudades[0], ubicaciones)
+
+$\;$7.si(ubicaciones != \emptyset)
+
+$\;$
+$\;$8.regresoCiudades.añadir(menorDistancia(ubicacionInicial,ubicaciones))
+
+$\;$
+$\;$9.ubicaciones = quitarUbicacion(regresoCiudades[0], ubicaciones)
+
+$\;$10.mientras(indice $<$ ubicaciones.longitud)
+
+$\;$
+$\;$11.ordenCiudades.añadir(menorDistancia(ubicacionInicial,ubicaciones))
+
+$\;$
+$\;$12.ubicaciones = quitarUbicacion(ordenCiudades[indice], ubicaciones)
+
+$\;$
+$\;$13.regresoCiudades.añadir(menorDistancia(ubicacionInicial,ubicaciones))
+
+$\;$
+$\;$14.ubicaciones = quitarUbicacion(regresoCiudades[indice], ubicaciones)
+
+$\;$15.mientras(indice $<$ regresoCiudades.longitud)
+
+$\;$
+$\;$//Añadir primero los \'{u}ltimos t\'{e}rminos
+
+$\;$
+$\;$16.ordenCiudades.añadir(regresoCiudades[indice])
+
+$\;$17.solucion = convertirASolucion(ordenCiudades)
+\\
+\\
+Este algoritmo recibe la ubicaci\'{o}n inicial y la lista de ubicaciones seleccionadas por el usuario. Inicialmente se busca la ciudad más cercana al punto inicial, si es la \'{u}nica ciudad seleccionada entonces termina la ruta, en caso contrario va a seleccionar otra ciudad cercana al punto inicial (a esta ruta se le denomina regreso). Este proceso se va a repetir por cada ubicaci\'{o}n que el usuario haya seleccionado hasta que ya no hayan m\'{a}s ubicaciones para elegir. Como se puede observar tiene dos ciclos, el primer ciclo va a recorrer las ubicaciones dadas por el usuario y empezar\'{a} a poblar los dos arreglos (orden de ida y regreso). Este proceso le tomar\'{a} m\'{a}ximo n/2 iteraciones, donde n es el n\'{u}mero de ubicaciones seleccionado, puesto que por cada recorrido se est\'{a}n seleccionando dos objetos del arreglo de ubicaciones. Al finalizar el primer ciclo debe unir los arreglos para dar la soluci\'{o}n final, solamente que el \'{u}ltimo elemento del arreglo de regreso es la continuaci\'{o}n del \'{u}ltimo elemento del arreglo de ida. por lo que la concatenaci\'{o}n debe hacerse al rev\'{e}s. Este proceso se realiza como mucho n/2 veces puesto que la mitad de las ubicaciones ya estan en el arreglo final. Finalmente se añaden la posici\'{o}n inicial al principio y al final del arreglo resultante para aparezcan en la impresi\'{o}n que se le hace al usuario.
+
+Al tener 2 ciclos de n/2, el algoritmo se ejecuta como mucho n veces por lo que su complejidad es O(n).
 
 \end{document}

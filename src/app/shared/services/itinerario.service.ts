@@ -53,7 +53,6 @@ export class ItinerarioService {
 
     switch(algoritmo){
       case busquedaExhaustiva:
-          //To Do: Algoritmo de búsqueda Exhaustiva
           this.busquedaExhaustiva(ubicacionInicial);
           console.log(this.solucionesExhaustivo);
         break;
@@ -64,7 +63,6 @@ export class ItinerarioService {
           //Búsqueda Exhaustiva
           this.busquedaExhaustiva(ubicacionInicial);
           console.log(this.solucionesExhaustivo);
-          //Búsqueda Boraz
           this.solucionVoraz = this.busquedaVorazv2(ubicacionInicial, this.ubicaciones);;
         break;
     }
@@ -324,7 +322,7 @@ export class ItinerarioService {
         this.solucionesExhaustivo[i].distancia += this.calcularDistanciaUbicaciones(this.solucionesExhaustivo[i].ubicaciones[j], this.solucionesExhaustivo[i].ubicaciones[j-1]);
       }
 
-      //Almacena la ruta mas corta
+      //Almacena la ruta más corta
       if(this.solucionesExhaustivo[i].distancia < mejorRuta.distancia){
         mejorRuta.ubicaciones = this.solucionesExhaustivo[i].ubicaciones;
         mejorRuta.distancia = this.solucionesExhaustivo[i].distancia;
