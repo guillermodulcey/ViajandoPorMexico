@@ -18,9 +18,10 @@ export class ItinerarioService {
   //Variables de clase
   radioTierra: number = 6371;
   ubicaciones: Ubicacion[] = [];
-  solucionesExhaustivo: SolucionExh[];
-  solucionVoraz: Solucion;
-  //ubicacionInicial: Ubicacion;
+  solucionesExh: Solucion;
+  solucionVoraz: Solucion; 
+  auxSolucionesExh: SolucionExh[];
+  mejorRutaExh: Solucion;
 
   //Constructor
   constructor() {}
@@ -37,8 +38,10 @@ export class ItinerarioService {
 
   //Método que calcula la mejor ruta basado en la latitud, longitud y algoritmo seleccionado
   calcularMejorRuta(latitud: number, longitud: number, algoritmo: string) {
-    this.solucionesExhaustivo = [];
+    this.solucionesExh = [];
     this.solucionVoraz = null;
+    this.auxSolucionesExh = [];
+    this.mejorRutaExh = {ubicaciones: "", distancia: Infinity};
 
     let ubicacionInicial: Ubicacion = { 
       nombreEstado: "Posición", 
@@ -54,15 +57,12 @@ export class ItinerarioService {
     switch(algoritmo){
       case busquedaExhaustiva:
           this.busquedaExhaustiva(ubicacionInicial);
-          console.log(this.solucionesExhaustivo);
         break;
       case busquedaVoraz:
           this.solucionVoraz = this.busquedaVorazv2(ubicacionInicial, this.ubicaciones);
         break;
       case ambas:
-          //Búsqueda Exhaustiva
           this.busquedaExhaustiva(ubicacionInicial);
-          console.log(this.solucionesExhaustivo);
           this.solucionVoraz = this.busquedaVorazv2(ubicacionInicial, this.ubicaciones);;
         break;
     }
@@ -112,7 +112,7 @@ export class ItinerarioService {
 
   //Método que verifica si existe una solución exhaustiva (basado en la selección del usuario)
   mostrarExhaustiva(): boolean{
-    return (!!this.solucionesExhaustivo);
+    return (!!this.solucionesExh);
   }
 
   //Método que verifica si existe una solución voráz (basado en la selección del usuario)
@@ -275,14 +275,14 @@ export class ItinerarioService {
     return temporal;
   }
 
-  //Realiza las permutaciones de todas las ciudades seleccionadas
+  //Realiza las permutaciones de todas las ubicaciones seleccionadas
   permutaciones(tamanio: number, ubicaciones: Ubicacion[]){
     if(tamanio == 1){
       //Crea un nuevo elemento en el arreglo
-      this.solucionesExhaustivo.push({ubicaciones: [], distancia: 0});
+      this.auxSolucionesExh.push({ubicaciones: [], distancia: 0});
       //Almacena la permutación actual
       for (var i = 0; i < ubicaciones.length; i++) {
-        this.solucionesExhaustivo[this.solucionesExhaustivo.length-1].ubicaciones[i] = ubicaciones[i];
+        this.auxSolucionesExh[this.auxSolucionesExh.length-1].ubicaciones[i] = ubicaciones[i];
       }
 
     }else{
@@ -301,37 +301,42 @@ export class ItinerarioService {
     }
   }
 
-  //Implementa la busqueda exhaustiva y muestra el resultado
+  //Implementa la busqueda exhaustiva
   busquedaExhaustiva(ubicacionInicial: Ubicacion){
+
     //Si el arreglo contiene elementos, los elimina.
-    this.solucionesExhaustivo.splice(0,this.solucionesExhaustivo.length-1);
+    this.auxSolucionesExh.splice(0,this.auxSolucionesExh.length-1);
 
     let auxUbicaciones = this.clonarUbicaciones(this.ubicaciones);
 
-    //Ejectua las permutaciones
+    //Ejecuta las permutaciones
     this.permutaciones(auxUbicaciones.length, auxUbicaciones);
 
-    let mejorRuta: SolucionExh = {ubicaciones: [], distancia: Infinity};
-
     //Calcula las distancias
-    for(let i=0; i < this.solucionesExhaustivo.length ; i++){
-      this.solucionesExhaustivo[i].ubicaciones.unshift(ubicacionInicial);
-      this.solucionesExhaustivo[i].ubicaciones.push(ubicacionInicial);
+    for(let i=0; i < this.auxSolucionesExh.length ; i++){
+      this.auxSolucionesExh[i].ubicaciones.unshift(ubicacionInicial);
+      this.auxSolucionesExh[i].ubicaciones.push(ubicacionInicial);
         
-      for (let j=this.solucionesExhaustivo[0].ubicaciones.length-1 ; j > 0 ;j--) {
-        this.solucionesExhaustivo[i].distancia += this.calcularDistanciaUbicaciones(this.solucionesExhaustivo[i].ubicaciones[j], this.solucionesExhaustivo[i].ubicaciones[j-1]);
+      for (let j=this.auxSolucionesExh[0].ubicaciones.length-1 ; j > 0 ;j--) {
+        this.auxSolucionesExh[i].distancia += this.calcularDistanciaUbicaciones(this.auxSolucionesExh[i].ubicaciones[j], this.auxSolucionesExh[i].ubicaciones[j-1]);
       }
 
-      //Almacena la ruta más corta
-      if(this.solucionesExhaustivo[i].distancia < mejorRuta.distancia){
-        mejorRuta.ubicaciones = this.solucionesExhaustivo[i].ubicaciones;
-        mejorRuta.distancia = this.solucionesExhaustivo[i].distancia;
+      //Almacena la ruta mas corta
+      if(this.auxSolucionesExh[i].distancia < this.mejorRutaExh.distancia){
+        //Si ya existe una mejor ruta almacenada, la agrega al arreglo de soluciones  
+        if(this.mejorRutaExh.distancia!=Infinity) this.solucionesExh.push(this.mejorRutaExh);
+
+        //Almacena la nueva mejor ruta
+        this.mejorRutaExh = this.ubicacionesASolucion(this.auxSolucionesExh[i].ubicaciones);
+        this.mejorRutaExh.distancia = this.auxSolucionesExh[i].distancia;
+      }else{
+        //Si no es una mejor solución, la agrega al arreglo de soluciones
+        this.solucionesExh.push(this.ubicacionesASolucion(this.auxSolucionesExh[i].ubicaciones));
       }
     }
-    
-    console.log("Mejor Ruta: ");
-    console.log(mejorRuta);
-    console.log("Posibles rutas: ");
+
+    //Añade la mejor ruta encontrada al inicio de las soluciones
+    this.solucionesExh.unshift(this.mejorRutaExh);
   }
 
 }
