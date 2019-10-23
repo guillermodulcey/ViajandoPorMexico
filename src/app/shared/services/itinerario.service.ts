@@ -18,7 +18,7 @@ export class ItinerarioService {
   //Variables de clase
   radioTierra: number = 6371;
   ubicaciones: Ubicacion[] = [];
-  solucionesExh: Solucion;
+  solucionesExh: Solucion[] = [];
   solucionVoraz: Solucion; 
   auxSolucionesExh: SolucionExh[];
   mejorRutaExh: Solucion;
@@ -41,7 +41,7 @@ export class ItinerarioService {
     this.solucionesExh = [];
     this.solucionVoraz = null;
     this.auxSolucionesExh = [];
-    this.mejorRutaExh = {ubicaciones: "", distancia: Infinity};
+    this.mejorRutaExh = {ciudades: "", distancia: Infinity};
 
     let ubicacionInicial: Ubicacion = { 
       nombreEstado: "Posición", 
@@ -112,7 +112,7 @@ export class ItinerarioService {
 
   //Método que verifica si existe una solución exhaustiva (basado en la selección del usuario)
   mostrarExhaustiva(): boolean{
-    return (!!this.solucionesExh);
+    return (this.solucionesExh.length > 0);
   }
 
   //Método que verifica si existe una solución voráz (basado en la selección del usuario)
