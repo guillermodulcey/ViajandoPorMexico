@@ -12,14 +12,27 @@
 
 \maketitle
 
-\section*{Titulo}
+\section*{Ubicación aplicación}
 https://viajandopormexico.herokuapp.com/
 
-\subsection*{AngularJS}
-AngularJS es un framework de desarrollo web creado por google para codificar l\'{o}gica del lado del cliente. Su arquitectura se basa en MVVC. El framework utiliza javascript como lenguaje principal aunque sus archivos son en su mayor\'{i}a typescript (para integraci\'{o}n con arquitectura JSON).
+\section*{Integrantes}
+Karla Guzmán
+\\
+Hernán Dulcey
 
-\subsection*{Algoritmo vor\'{a}z}
-El algoritmo utilizado fue una b\'{u}squeda en dos direcciones. Primero se va a considerar las dos ciudades m\'{a}s cercanas al punto de origen, creando una ruta de ida y otra ruta de regreso. De esta manera se calculan las distancias m\'{a}s cortas en un sentido casi circular del recorrido.
+\section*{Introducción}
+
+Se requiere comparar dos tipos de algoritmos: Búsqueda exhaustiva y algoritmo voráz, en una aplicación web que determina la mejor ruta para visitar ciudades de México. Se debe explicar que tecnología se usó, además de considerar sus complejidades y determinar que ventajas tienen uno respecto al otro.
+
+\section*{Tecnologías}
+
+\subsection*{AngularJS}
+AngularJS es un framework de desarrollo web creado por google para codificar lógica del lado del cliente. El framework utiliza javascript como lenguaje principal aunque sus archivos son en su mayoría typescript (para integración con arquitectura JSON). Angular está diseñado para implementar aplicaciones web con fácilidad, por lo que fue elegido por la necesidad del proyecto.
+
+\section*{Algoritmos}
+
+\subsection*{Algoritmo voráz}
+El algoritmo utilizado fue una búsqueda en dos direcciones. Primero se va a considerar las dos ciudades más cercanas al punto de origen, creando una ruta de ida y otra ruta de regreso. De esta manera se calculan las distancias más cortas en un sentido casi circular del recorrido.
 \\
 \\
 1.busquedaVoraz(ubicacionInicial, ubicaciones)
@@ -59,7 +72,7 @@ $\;$14.ubicaciones = quitarUbicacion(regresoCiudades[indice], ubicaciones)
 $\;$15.mientras(indice $<$ regresoCiudades.longitud)
 
 $\;$
-$\;$//Añadir primero los \'{u}ltimos t\'{e}rminos
+$\;$//Añadir primero los últimos términos
 
 $\;$
 $\;$16.ordenCiudades.añadir(regresoCiudades[indice])
@@ -67,8 +80,12 @@ $\;$16.ordenCiudades.añadir(regresoCiudades[indice])
 $\;$17.solucion = convertirASolucion(ordenCiudades)
 \\
 \\
-Este algoritmo recibe la ubicaci\'{o}n inicial y la lista de ubicaciones seleccionadas por el usuario. Inicialmente se busca la ciudad más cercana al punto inicial, si es la \'{u}nica ciudad seleccionada entonces termina la ruta, en caso contrario va a seleccionar otra ciudad cercana al punto inicial (a esta ruta se le denomina regreso). Este proceso se va a repetir por cada ubicaci\'{o}n que el usuario haya seleccionado hasta que ya no hayan m\'{a}s ubicaciones para elegir. Como se puede observar tiene dos ciclos, el primer ciclo va a recorrer las ubicaciones dadas por el usuario y empezar\'{a} a poblar los dos arreglos (orden de ida y regreso). Este proceso le tomar\'{a} m\'{a}ximo n/2 iteraciones, donde n es el n\'{u}mero de ubicaciones seleccionado, puesto que por cada recorrido se est\'{a}n seleccionando dos objetos del arreglo de ubicaciones. Al finalizar el primer ciclo debe unir los arreglos para dar la soluci\'{o}n final, solamente que el \'{u}ltimo elemento del arreglo de regreso es la continuaci\'{o}n del \'{u}ltimo elemento del arreglo de ida. por lo que la concatenaci\'{o}n debe hacerse al rev\'{e}s. Este proceso se realiza como mucho n/2 veces puesto que la mitad de las ubicaciones ya estan en el arreglo final. Finalmente se añaden la posici\'{o}n inicial al principio y al final del arreglo resultante para aparezcan en la impresi\'{o}n que se le hace al usuario.
+Este algoritmo recibe la ubicación inicial y la lista de ubicaciones seleccionadas por el usuario. Inicialmente se busca la ciudad m\{a}s cercana al punto inicial, si es la única ciudad seleccionada entonces termina la ruta, en caso contrario va a seleccionar otra ciudad cercana al punto inicial (a esta ruta se le denomina regreso). Este proceso se va a repetir por cada ubicación que el usuario haya seleccionado hasta que ya no hayan más ubicaciones para elegir. Como se puede observar tiene dos ciclos, el primer ciclo va a recorrer las ubicaciones dadas por el usuario y empezará a poblar los dos arreglos (orden de ida y regreso). Este proceso le tomará máximo n/2 iteraciones, donde n es el número de ubicaciones seleccionado, puesto que por cada recorrido se están seleccionando dos objetos del arreglo de ubicaciones. Al finalizar el primer ciclo debe unir los arreglos para dar la solución final, solamente que el último elemento del arreglo de regreso es la continuación del último elemento del arreglo de ida. por lo que la concatenación debe hacerse al revés. Este proceso se realiza como mucho n/2 veces puesto que la mitad de las ubicaciones ya estan en el arreglo final. Finalmente se añaden la posición inicial al principio y al final del arreglo resultante para aparezcan en la impresión que se le hace al usuario.
 
-Al tener 2 ciclos de n/2, el algoritmo se ejecuta como mucho n veces por lo que su complejidad es O(n).
+Debe considerarse que al calcular la menor distancia, el algoritmo tiene que compararse con la lista de ubicaciones. La lista se va a ir decrementando a medida que se seleccionan ciudades, pero su ecuación sigue siendo de orden n, por lo tanto este proceso toma O($n^2$). Al tener 2 ciclos, uno de ($n^2$)/2 y otro de n/2, el algoritmo se ejecuta como mucho $n^2$ veces por lo que su complejidad es O($n^2$).
+
+\section*{Conclusión}
+
+El algoritmo voráz es capaz de encontrar una solución en un tiempo razonable pero no necesariamente es la mejor solución. El algoritmo exhaustivo es capaz de encontrar la mejor solución pero como debe analizar cada una de ellas, le toma mucho tiempo para un espacio de búsqueda muy grande. En este caso se puede afirmar que cada algoritmo sacrifica una caracteristica para poder compensar lo que le hace falta. Cabe resaltar que en ciertos casos el algoritmo voráz puede encontrar la mejor solución o una solución muy cercana a la mejor, por lo que generalmente se recomienda utilizar una busqueda voráz en casos que no dependan de la exactitud del resultado.  
 
 \end{document}
