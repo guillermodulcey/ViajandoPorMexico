@@ -20,8 +20,6 @@ export class ItinerarioService {
   ubicaciones: Ubicacion[] = [];
   solucionesExh: Solucion[] = [];
   solucionVoraz: Solucion; 
-  auxSolucionesExh: SolucionExh[];
-  mejorRutaExh: Solucion;
 
   //Constructor
   constructor() {}
@@ -40,8 +38,6 @@ export class ItinerarioService {
   calcularMejorRuta(latitud: number, longitud: number, algoritmo: string) {
     this.solucionesExh = [];
     this.solucionVoraz = null;
-    this.auxSolucionesExh = [];
-    this.mejorRutaExh = {ciudades: "", distancia: Infinity};
 
     let ubicacionInicial: Ubicacion = { 
       nombreEstado: "Posición", 
@@ -276,18 +272,18 @@ export class ItinerarioService {
   }
 
   //Realiza las permutaciones de todas las ubicaciones seleccionadas
-  permutaciones(tamanio: number, ubicaciones: Ubicacion[]){
+  permutaciones(tamanio: number, ubicaciones: Ubicacion[], auxSolucionesExh: SolucionExh[]){
     if(tamanio == 1){
       //Crea un nuevo elemento en el arreglo
-      this.auxSolucionesExh.push({ubicaciones: [], distancia: 0});
+      auxSolucionesExh.push({ubicaciones: [], distancia: 0});
       //Almacena la permutación actual
       for (var i = 0; i < ubicaciones.length; i++) {
-        this.auxSolucionesExh[this.auxSolucionesExh.length-1].ubicaciones[i] = ubicaciones[i];
+        auxSolucionesExh[auxSolucionesExh.length-1].ubicaciones[i] = ubicaciones[i];
       }
 
     }else{
       for(let i = 0;i < tamanio;i++){
-        this.permutaciones(tamanio-1, ubicaciones);
+        this.permutaciones(tamanio-1, ubicaciones, auxSolucionesExh);
         if((tamanio%2)==0){
           let aux = ubicaciones[i];
           ubicaciones[i] = ubicaciones[tamanio-1]; 
@@ -304,39 +300,39 @@ export class ItinerarioService {
   //Implementa la busqueda exhaustiva
   busquedaExhaustiva(ubicacionInicial: Ubicacion){
 
-    //Si el arreglo contiene elementos, los elimina.
-    this.auxSolucionesExh.splice(0,this.auxSolucionesExh.length-1);
+    //Almacena las posibles soluciones temporalmente para hacer operaciones con ellas.
+    let auxSolucionesExh: SolucionExh[] = [];
 
-    let auxUbicaciones = this.clonarUbicaciones(this.ubicaciones);
+    //Variable en la que se almacenará la mejor ruta encontrada.
+    let mejorRuta: Solucion = {ciudades: "", distancia: Infinity};
 
     //Ejecuta las permutaciones
-    this.permutaciones(auxUbicaciones.length, auxUbicaciones);
+    this.permutaciones(this.ubicaciones.length, this.ubicaciones, auxSolucionesExh);
 
     //Calcula las distancias
-    for(let i=0; i < this.auxSolucionesExh.length ; i++){
-      this.auxSolucionesExh[i].ubicaciones.unshift(ubicacionInicial);
-      this.auxSolucionesExh[i].ubicaciones.push(ubicacionInicial);
+    for(let i=0; i < auxSolucionesExh.length ; i++){
+      auxSolucionesExh[i].ubicaciones.unshift(ubicacionInicial);
+      auxSolucionesExh[i].ubicaciones.push(ubicacionInicial);
         
-      for (let j=this.auxSolucionesExh[0].ubicaciones.length-1 ; j > 0 ;j--) {
-        this.auxSolucionesExh[i].distancia += this.calcularDistanciaUbicaciones(this.auxSolucionesExh[i].ubicaciones[j], this.auxSolucionesExh[i].ubicaciones[j-1]);
+      for (let j=auxSolucionesExh[0].ubicaciones.length-1 ; j > 0 ;j--) {
+        auxSolucionesExh[i].distancia += this.calcularDistanciaUbicaciones(auxSolucionesExh[i].ubicaciones[j], auxSolucionesExh[i].ubicaciones[j-1]);
       }
 
-      //Almacena la ruta mas corta
-      if(this.auxSolucionesExh[i].distancia < this.mejorRutaExh.distancia){
+      //Si encuentra una ruta mejor a la anterior conocida
+      if(auxSolucionesExh[i].distancia < mejorRuta.distancia){
         //Si ya existe una mejor ruta almacenada, la agrega al arreglo de soluciones  
-        if(this.mejorRutaExh.distancia!=Infinity) this.solucionesExh.push(this.mejorRutaExh);
+        if(mejorRuta.distancia!=Infinity) this.solucionesExh.push(mejorRuta);
 
         //Almacena la nueva mejor ruta
-        this.mejorRutaExh = this.ubicacionesASolucion(this.auxSolucionesExh[i].ubicaciones);
-        this.mejorRutaExh.distancia = this.auxSolucionesExh[i].distancia;
+        mejorRuta = this.ubicacionesASolucion(auxSolucionesExh[i].ubicaciones);
       }else{
         //Si no es una mejor solución, la agrega al arreglo de soluciones
-        this.solucionesExh.push(this.ubicacionesASolucion(this.auxSolucionesExh[i].ubicaciones));
+        this.solucionesExh.push(this.ubicacionesASolucion(auxSolucionesExh[i].ubicaciones));
       }
     }
 
     //Añade la mejor ruta encontrada al inicio de las soluciones
-    this.solucionesExh.unshift(this.mejorRutaExh);
+    this.solucionesExh.unshift(mejorRuta);
   }
 
 }
