@@ -222,16 +222,19 @@ export class ItinerarioService {
       auxiliarUbicaciones = this.quitarUbicacion(regresoCiudades[0],auxiliarUbicaciones);
     }
 
-    for (let index = 0; index < auxiliarUbicaciones.length; index++) {
+    let index = 0;
+    while(auxiliarUbicaciones.length!==0){
       ordenCiudades.push(this.menorDistancia(ordenCiudades[index],auxiliarUbicaciones));
       auxiliarUbicaciones = this.quitarUbicacion(ordenCiudades[index+1],auxiliarUbicaciones);
 
-      if(auxiliarUbicaciones.length==0){
+      if(auxiliarUbicaciones.length===0){
         break;
       }
 
       regresoCiudades.push(this.menorDistancia(regresoCiudades[index],auxiliarUbicaciones));
       auxiliarUbicaciones = this.quitarUbicacion(regresoCiudades[index+1],auxiliarUbicaciones);
+
+      index++;
     }
 
     for (let index = regresoCiudades.length -1; index >= 0 ; index--) {
